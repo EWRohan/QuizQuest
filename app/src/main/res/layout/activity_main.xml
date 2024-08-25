@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:gravity="center_horizontal"
+    android:layout_height="match_parent"
+    android:background="#fff"
+    tools:context=".MainActivity">
+
+<!--    <ListView-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:id="@+id/listview"/>-->
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="100dp"
+        android:contentDescription="@string/img_Des"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/quiz_quest_logo"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#000"
+        android:textSize="20sp"
+        android:id="@+id/timer"/>
+
+<!--    <FrameLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="390dp"-->
+<!--        android:id="@+id/container"/>-->
+    <TextView
+        android:layout_marginTop="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:textColor="#fff"
+        android:textSize="30sp"
+
+        android:layout_marginBottom="100dp"
+        android:id="@+id/QuestionTxt"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:id="@+id/progressbar"
+            android:layout_centerInParent="true"/>
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:columnCount="2">
+        <TextView
+
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="50dp"
+            android:textAlignment="textStart"
+            android:textSize="20sp"
+            android:textColor="#fff"
+            android:id="@+id/OptionTxt1"/>
+        <TextView
+
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+
+            android:layout_marginBottom="50dp"
+            android:textColor="#fff"
+            android:textAlignment="textStart"
+            android:textSize="20sp"
+            android:id="@+id/OptionTxt2"/>
+
+        <TextView
+            android:layout_width="180dp"
+            android:textAlignment="textStart"
+            android:textSize="20sp"
+            android:textColor="#fff"
+            android:layout_height="wrap_content"
+
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="30dp"
+            android:id="@+id/OptionTxt3"/>
+        <TextView
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:textColor="#fff"
+            android:textAlignment="textStart"
+            android:textSize="20sp"
+
+            android:id="@+id/OptionTxt4"/>
+
+    </GridLayout>
+    </RelativeLayout>
+
+</LinearLayout>
