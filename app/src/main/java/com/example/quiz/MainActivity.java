@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,7 +21,6 @@ import com.androidnetworking.AndroidNetworking;
 import com.androidnetworking.common.Priority;
 import com.androidnetworking.error.ANError;
 import com.androidnetworking.interfaces.JSONObjectRequestListener;
-import com.google.gson.JsonParser;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,7 +50,30 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        Intent fromOpening=getIntent();
+        int flag=fromOpening.getIntExtra("Flag",0);
         //connecting ui components to java
+        intVar();
+
+
+        //Api url
+//        String url = "https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple";
+
+        String url = "https://opentdb.com/api.php?amount=10&difficulty=easy&type=multiple";
+
+        if(flag>0)
+        {
+            url = "https://opentdb.com/api.php?amount=10&category="+flag+"&difficulty=easy&type=multiple";
+        }
+
+        //calling Api call method
+        ApiCall(url);
+
+
+
+    }
+
+    private void intVar() {
         QuestionTxt = findViewById(R.id.QuestionTxt);
         OptionTxt1 = findViewById(R.id.OptionTxt1);
         OptionTxt2 = findViewById(R.id.OptionTxt2);
@@ -59,48 +82,33 @@ public class MainActivity extends AppCompatActivity {
         timer = findViewById(R.id.timer);
         progressbar = findViewById(R.id.progressbar);
 
-
-        //Api url
-        String url = "https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple";
-
-        //List of questions , correct ans , and all options
         questions =new ArrayList<>();
         ans =new ArrayList<>();
         options =new ArrayList<>();
-
-        //calling Api call method
-        ApiCall(url);
-
-
-
-        //Calling loadOptions which sets up the question in ui
-//        loadQuestions(0,10000);
-//        loadQuestions(1,30000);
-//        loadQuestions(2,50000);
-//        loadQuestions(3,70000);
-//        loadQuestions(4,90000);
-
-        //starts the timer
-
-
-
     }
 
     private void loadQuestions(int QuestionNo) {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                //End the round when the questions reach the end
                 if(QuestionNo>=10)Next(getApplicationContext(),ScoreActivity.class);
+
                 //Reset timer when the new Question loads
                 time=20;
+                //resume Time
                 isRunning=true;
+                //resting TextView Colors
                 QuestionTxt.setTextColor(getColor(R.color.black));
                 OptionTxt1.setTextColor(getColor(R.color.black));
                 OptionTxt2.setTextColor(getColor(R.color.black));
                 OptionTxt3.setTextColor(getColor(R.color.black));
                 OptionTxt4.setTextColor(getColor(R.color.black));
+
                 //Shuffle the list of option for random option every time
                 Collections.shuffle(options.get(QuestionNo));
+
                 //sets the question ans options in ui
                 QuestionTxt.setText(questions.get(QuestionNo));
                 OptionTxt1.setText(String.format("A. %s",options.get(QuestionNo).get(0)));
@@ -117,6 +125,7 @@ public class MainActivity extends AppCompatActivity {
             }
         },3000);
     }
+
     //Api Call method the calls Api url and Assign values in the list of question options and correct ans
     private void ApiCall(String url) {
         AndroidNetworking.get(url).setPriority(Priority.HIGH).build()
@@ -164,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
     }
-
+    //Method that starts the clock
     private void starTimer(Handler handler) {
         handler.post(new Runnable() {
             @Override
@@ -177,8 +186,6 @@ public class MainActivity extends AppCompatActivity {
 
                 if(time==0)
                 {
-//                    Intent iNext=new Intent(getApplicationContext(),ScoreActivity.class);
-//                    startActivity(iNext);
                       Next(getApplicationContext(),ScoreActivity.class);
                     finish();
                 }
@@ -187,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
+    //Method for ans Validation that takes Text View,Ans and QuestionNo as Parameters and validates
     public void Check(TextView textView,String ans,int QuestionNo)
     {
         textView.setOnClickListener(new View.OnClickListener() {
@@ -209,17 +216,17 @@ public class MainActivity extends AppCompatActivity {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-//                            Intent iNext=new Intent(getApplicationContext(),ScoreActivity.class);
-//                            startActivity(iNext);
                             Next(MainActivity.this,ScoreActivity.class);
                             finish();
                         }
                     },3000);
                 }
+                getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                        WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             }
         });
     }
-
+    //Removes unnecessary Symbols from The String
     private String parse(String str)
     {
         StringBuilder sb=new StringBuilder();
@@ -232,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
         }
         return sb.toString();
     }
+    //Intent passing form this class to desired class and pass the required bundle
     private void Next(Context context,Class nextClass)
     {
         Intent iNext=new Intent(context,nextClass);

@@ -7,5 +7,6 @@
     <string name="Category">Category</string>
     <string name="Prize">Prize</string>
     <string name="Replay">Replay</string>
+    <string name="Select">Select</string>
     <string name="MainMenu">MainMenu</string>
 </resources>
