@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class OpeningActivity extends AppCompatActivity {
-Button playButton,chose_category;
+Button playButton,chose_category,prize_range;
 ArrayList<String> category;
 String Category_Selected="Any Category";
 HashMap<String,Integer> categoryFlagValue;
@@ -38,6 +39,7 @@ HashMap<String,Integer> categoryFlagValue;
         });
         playButton=findViewById(R.id.playButton);
         chose_category=findViewById(R.id.chose_category);
+        prize_range=findViewById(R.id.prize_range);
         setCategoryVal();
         setCategoryFlagValue();
 
@@ -69,6 +71,12 @@ HashMap<String,Integer> categoryFlagValue;
                     }
                 });
                 dialog.show();
+            }
+        });
+        prize_range.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(OpeningActivity.this, "Working on this Activity", Toast.LENGTH_SHORT).show();
             }
         });
 

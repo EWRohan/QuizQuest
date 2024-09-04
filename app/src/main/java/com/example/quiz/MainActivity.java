@@ -2,6 +2,9 @@ package com.example.quiz;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -26,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
@@ -38,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<ArrayList<String>> options;
     boolean isRunning=true;
     int count=0;
+    MediaPlayer correct_mp =new MediaPlayer();;
+    MediaPlayer fail_mp=new MediaPlayer();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AndroidNetworking.initialize(getApplicationContext());
@@ -53,14 +59,14 @@ public class MainActivity extends AppCompatActivity {
         Intent fromOpening=getIntent();
         int flag=fromOpening.getIntExtra("Flag",0);
         //connecting ui components to java
-        intVar();
+        initVar();
 
 
         //Api url
-//        String url = "https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple";
-
+        //Default url for random category questions
         String url = "https://opentdb.com/api.php?amount=10&difficulty=easy&type=multiple";
 
+        //selecting category based on flag value
         if(flag>0)
         {
             url = "https://opentdb.com/api.php?amount=10&category="+flag+"&difficulty=easy&type=multiple";
@@ -68,12 +74,35 @@ public class MainActivity extends AppCompatActivity {
 
         //calling Api call method
         ApiCall(url);
-
+        //sets audio
+        AddMedia();
 
 
     }
+    //Method that initializes the audio components
+    private void AddMedia() {
+        correct_mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
-    private void intVar() {
+        fail_mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
+        String correct_path="android.resource://"+getPackageName()+"/raw/correct";
+        String fail_path="android.resource://"+getPackageName()+"/raw/fail";
+
+        Uri correct_uri= Uri.parse(correct_path);
+        Uri fail_uri= Uri.parse(fail_path);
+
+        try {
+            correct_mp.setDataSource(getApplicationContext(),correct_uri);
+            correct_mp.prepare();
+            fail_mp.setDataSource(getApplicationContext(),fail_uri);
+            fail_mp.prepare();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    //initiating values of multiple variables
+    private void initVar() {
         QuestionTxt = findViewById(R.id.QuestionTxt);
         OptionTxt1 = findViewById(R.id.OptionTxt1);
         OptionTxt2 = findViewById(R.id.OptionTxt2);
@@ -87,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
         options =new ArrayList<>();
     }
 
+    //Method to load questions
     private void loadQuestions(int QuestionNo) {
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -202,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(textView.getText().toString().equals(ans))
                 {
+                    correct_mp.start();
                     textView.setTextColor(getColor(R.color.green));
                     Toast.makeText(MainActivity.this, "Correct", Toast.LENGTH_SHORT).show();
                     isRunning=false;
@@ -210,6 +241,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 else
                 {
+                    fail_mp.start();
                     Toast.makeText(MainActivity.this, "Wrong!", Toast.LENGTH_SHORT).show();
                     isRunning=false;
                     textView.setTextColor(getColor(R.color.Red));
@@ -237,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
                 sb.append(str.charAt(i));
             }
         }
-        return sb.toString();
+        return sb.toString().replace("quot","").replace("039","'");
     }
     //Intent passing form this class to desired class and pass the required bundle
     private void Next(Context context,Class nextClass)
