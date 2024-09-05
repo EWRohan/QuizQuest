@@ -33,6 +33,7 @@ Button restartBtn,toHome;
 
         Intent fromMain=getIntent();
         int scoreCount=fromMain.getIntExtra("Count",0);
+        int flag=fromMain.getIntExtra("Category",0);
 
         score.setText(String.format("%s",scoreCount));
         prize.setText(String.format("%s",scoreCount*1000));
@@ -40,7 +41,9 @@ Button restartBtn,toHome;
         restartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ScoreActivity.this,MainActivity.class));
+                Intent iRestart=new Intent(ScoreActivity.this,MainActivity.class);
+                iRestart.putExtra("Flag",flag);
+                startActivity(iRestart);
                 finish();
             }
         });

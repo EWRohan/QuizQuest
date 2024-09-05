@@ -42,8 +42,10 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<ArrayList<String>> options;
     boolean isRunning=true;
     int count=0;
+    int flag;
     MediaPlayer correct_mp =new MediaPlayer();;
     MediaPlayer fail_mp=new MediaPlayer();
+    Intent fromOpening;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         AndroidNetworking.initialize(getApplicationContext());
@@ -56,20 +58,26 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        Intent fromOpening=getIntent();
-        int flag=fromOpening.getIntExtra("Flag",0);
+        fromOpening=getIntent();
+        flag=fromOpening.getIntExtra("Flag",0);
+        String difficulty=fromOpening.getStringExtra("difficulty");
         //connecting ui components to java
         initVar();
 
 
         //Api url
         //Default url for random category questions
-        String url = "https://opentdb.com/api.php?amount=10&difficulty=easy&type=multiple";
+        String url = "https://opentdb.com/api.php?amount=10&type=multiple";
 
         //selecting category based on flag value
         if(flag>0)
         {
-            url = "https://opentdb.com/api.php?amount=10&category="+flag+"&difficulty=easy&type=multiple";
+            url = "https://opentdb.com/api.php?amount=10&category="+flag+"&difficulty="+difficulty+"&type=multiple";
+            assert difficulty != null;
+            if(difficulty.equals("Any"))
+            {
+                url = "https://opentdb.com/api.php?amount=10&category="+flag+"&type=multiple";
+            }
         }
 
         //calling Api call method
@@ -276,6 +284,7 @@ public class MainActivity extends AppCompatActivity {
     {
         Intent iNext=new Intent(context,nextClass);
         iNext.putExtra("Count",count);
+        iNext.putExtra("Category",fromOpening.getIntExtra("Flag",0));
         startActivity(iNext);
     }
 }

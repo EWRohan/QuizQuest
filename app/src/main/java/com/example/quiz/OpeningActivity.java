@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -15,17 +16,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class OpeningActivity extends AppCompatActivity {
 Button playButton,chose_category,prize_range;
-ArrayList<String> category;
+ArrayList<String> category,difficulty;
 String Category_Selected="Any Category";
+String difficulty_Selected="easy";
 HashMap<String,Integer> categoryFlagValue;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +49,7 @@ HashMap<String,Integer> categoryFlagValue;
 
                 Intent iMain=new Intent(OpeningActivity.this,MainActivity.class);
                 iMain.putExtra("Flag",categoryFlagValue.get(Category_Selected));
+                iMain.putExtra("difficulty",difficulty_Selected);
                 startActivity(iMain);
             }
         });
@@ -76,13 +77,34 @@ HashMap<String,Integer> categoryFlagValue;
         prize_range.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(OpeningActivity.this, "Working on this Activity", Toast.LENGTH_SHORT).show();
+                final Dialog dialog=new Dialog(OpeningActivity.this);
+                dialog.setContentView(R.layout.dialog_layout);
+
+                TextView dialog_head=dialog.findViewById(R.id.dialog_head);
+                dialog_head.setText(R.string.Difficulty);
+                Button spinnerBtn=dialog.findViewById(R.id.spinnerBtn);
+                Spinner spinner=dialog.findViewById(R.id.spinner);
+                ArrayAdapter<String> spinnerAdapter=new ArrayAdapter<>(OpeningActivity.this, android.R.layout.simple_spinner_dropdown_item,difficulty);
+                spinner.setAdapter(spinnerAdapter);
+                spinnerBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        difficulty_Selected=spinner.getSelectedItem().toString();
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
             }
         });
 
     }
     private void setCategoryVal()
     {
+        difficulty=new ArrayList<>();
+        difficulty.add("Any");
+        difficulty.add("easy");
+        difficulty.add("medium");
+        difficulty.add("hard");
         category=new ArrayList<>();
         category.add("Any Category");
         category.add("General Knowledge");
@@ -96,7 +118,6 @@ HashMap<String,Integer> categoryFlagValue;
         category.add("Entertainment : Cartoon & Animation");
         category.add("Entertainment : Anime & Manga");
         category.add("Entertainment : Comics");
-        category.add("Any Category");
         category.add("Science & Nature");
         category.add("Science : Mathematics");
         category.add("Science : Computers");
