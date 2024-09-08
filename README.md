@@ -14,7 +14,7 @@ The application uses a local database for storing quiz questions and user progre
 
 ## Dependencies
 - AndroidX Libraries
-- AnroidNetworking
+- AndroidNetworking
 ## Usage
 - Home Screen: Start by selecting a quiz category or taking a random quiz.
 - Quiz Screen: Answer questions within the time limit. Tap on options to select your answer.
