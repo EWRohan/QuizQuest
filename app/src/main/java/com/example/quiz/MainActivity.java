@@ -250,6 +250,10 @@ public class MainActivity extends AppCompatActivity {
                 else
                 {
                     fail_mp.start();
+                    if(OptionTxt1.getText().toString().substring(3).equals(ans.substring(3)))OptionTxt1.setTextColor(getColor(R.color.green));
+                    if(OptionTxt2.getText().toString().substring(3).equals(ans.substring(3)))OptionTxt2.setTextColor(getColor(R.color.green));
+                    if(OptionTxt3.getText().toString().substring(3).equals(ans.substring(3)))OptionTxt3.setTextColor(getColor(R.color.green));
+                    if(OptionTxt4.getText().toString().substring(3).equals(ans.substring(3)))OptionTxt4.setTextColor(getColor(R.color.green));
                     Toast.makeText(MainActivity.this, "Wrong!", Toast.LENGTH_SHORT).show();
                     isRunning=false;
                     textView.setTextColor(getColor(R.color.Red));
@@ -266,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    //Removes unnecessary Symbols from The String
+    //Removes unnecessary Symbols from The String and replace quot as symbol of quot
     private String parse(String str)
     {
         StringBuilder sb=new StringBuilder();
