@@ -34,15 +34,26 @@ Button restartBtn,toHome;
         Intent fromMain=getIntent();
         int scoreCount=fromMain.getIntExtra("Count",0);
         int flag=fromMain.getIntExtra("Category",0);
-
-        score.setText(String.format("%s",scoreCount));
-        prize.setText(String.format("%s",scoreCount*1000));
+        String difficulty=fromMain.getStringExtra("difficulty");
+        int prizeMoney=0;
+        if(scoreCount<=5)
+        {
+            prizeMoney=scoreCount*1000;
+        }
+        else if(scoreCount>5 && scoreCount<=7)
+        {
+            prizeMoney=scoreCount*2000;
+        }
+        else prizeMoney=scoreCount*3000;
+        score.setText(String.format("Correct Answers : %s",scoreCount));
+        prize.setText(String.format("Prize Money : %s",prizeMoney));
 
         restartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent iRestart=new Intent(ScoreActivity.this,MainActivity.class);
                 iRestart.putExtra("Flag",flag);
+                iRestart.putExtra("difficulty",difficulty);
                 startActivity(iRestart);
                 finish();
             }

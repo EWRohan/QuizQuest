@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     int flag;
     MediaPlayer correct_mp =new MediaPlayer();;
     MediaPlayer fail_mp=new MediaPlayer();
+    MediaPlayer timer_mp=new MediaPlayer();
     Intent fromOpening;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,17 +94,23 @@ public class MainActivity extends AppCompatActivity {
 
         fail_mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
+        timer_mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
+
         String correct_path="android.resource://"+getPackageName()+"/raw/correct";
         String fail_path="android.resource://"+getPackageName()+"/raw/fail";
+        String timer_path="android.resource://"+getPackageName()+"/raw/timer";
 
         Uri correct_uri= Uri.parse(correct_path);
         Uri fail_uri= Uri.parse(fail_path);
+        Uri timer_uri=Uri.parse(timer_path);
 
         try {
             correct_mp.setDataSource(getApplicationContext(),correct_uri);
             correct_mp.prepare();
             fail_mp.setDataSource(getApplicationContext(),fail_uri);
             fail_mp.prepare();
+            timer_mp.setDataSource(getApplicationContext(),timer_uri);
+            timer_mp.prepare();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -135,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
 
                 //Reset timer when the new Question loads
                 time=20;
+                timer_mp.start();
+                timer_mp.setLooping(true);
                 //resume Time
                 isRunning=true;
                 //resting TextView Colors
@@ -185,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
                                 ArrayList<String> wrong=new ArrayList<>();
                                 JSONObject jsonObj = arr.getJSONObject(i);
                                 String Question = parse(jsonObj.getString("question"));
-                                String Option1 = jsonObj.getString("correct_answer");
+                                String Option1 = parse(jsonObj.getString("correct_answer"));
                                 JSONArray incorrect_arr = jsonObj.getJSONArray("incorrect_answers");
                                 String Option2 = parse(incorrect_arr.getString(0));
                                 String Option3 = parse(incorrect_arr.getString(1));
@@ -225,6 +234,8 @@ public class MainActivity extends AppCompatActivity {
                 if(time==0)
                 {
                       Next(getApplicationContext(),ScoreActivity.class);
+                      timer_mp.pause();
+                      fail_mp.start();
                     finish();
                 }
 
@@ -242,20 +253,24 @@ public class MainActivity extends AppCompatActivity {
                 {
                     correct_mp.start();
                     textView.setTextColor(getColor(R.color.green));
-                    Toast.makeText(MainActivity.this, "Correct", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(MainActivity.this, "Correct", Toast.LENGTH_SHORT).show();
                     isRunning=false;
+                    timer_mp.pause();
                     count++;
                     loadQuestions(QuestionNo+1);
                 }
                 else
                 {
+                    //start wrong ans sound
                     fail_mp.start();
+                    //color the correct ans
                     if(OptionTxt1.getText().toString().substring(3).equals(ans.substring(3)))OptionTxt1.setTextColor(getColor(R.color.green));
                     if(OptionTxt2.getText().toString().substring(3).equals(ans.substring(3)))OptionTxt2.setTextColor(getColor(R.color.green));
                     if(OptionTxt3.getText().toString().substring(3).equals(ans.substring(3)))OptionTxt3.setTextColor(getColor(R.color.green));
                     if(OptionTxt4.getText().toString().substring(3).equals(ans.substring(3)))OptionTxt4.setTextColor(getColor(R.color.green));
-                    Toast.makeText(MainActivity.this, "Wrong!", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(MainActivity.this, "Wrong!", Toast.LENGTH_SHORT).show();
                     isRunning=false;
+                    timer_mp.pause();
                     textView.setTextColor(getColor(R.color.Red));
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -289,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
         Intent iNext=new Intent(context,nextClass);
         iNext.putExtra("Count",count);
         iNext.putExtra("Category",fromOpening.getIntExtra("Flag",0));
+        iNext.putExtra("difficulty",fromOpening.getStringExtra("difficulty"));
         startActivity(iNext);
     }
 }
