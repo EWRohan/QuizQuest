@@ -22,3 +22,6 @@ The application uses a local database for storing quiz questions and user progre
 
 ## Contact
 For any inquiries or feedback, please reach out to rohansinghazad19@gmail.com.
+
+## Download Apk
+[Download QuizQuest](https://github.com/EWRohan/Files/raw/main/QuizQuest.apk)
